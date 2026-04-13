@@ -93,7 +93,7 @@ namespace MYCV.Web.Controllers
                 // STEP LOCK RULES
                 // ===============================
                 if (!step1Completed)
-                    return RedirectToAction("PersonalDetail");
+                    return RedirectToAction("Index");
 
                 if (!step2Completed)
                     return RedirectToAction("Education");

@@ -1,0 +1,232 @@
+﻿@using MYCV.Domain.Enums
+@model MYCV.Application.DTOs.UserSubscriptionDto
+
+@{
+    ViewData["Title"] = "Subscription";
+    var currentStep = (int)CvStep.Subscription;
+    var completedSteps = new List<int>
+    {
+        (int)CvStep.PersonalDetail,
+        (int)CvStep.Education,
+        (int)CvStep.WorkExperience,
+        (int)CvStep.Skills,
+        (int)CvStep.Projects,
+        (int)CvStep.Languages,
+        (int)CvStep.SummaryObjective,
+        (int)CvStep.References
+    };
+}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col text-center">
+                <h2 class="fw-bold">Subscription</h2>
+                <p class="text-muted">Choose your subscription package</p>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <!-- LEFT STEP NAVIGATION -->
+            <div class="col-lg-4 mb-4">
+                @await Component.InvokeAsync("CvStepNavigation", new
+                    {
+                        currentStep = currentStep,
+                        completedSteps = completedSteps
+                    })
+            </div>
+
+            <!-- RIGHT CONTENT -->
+            <div class="col-lg-8" style="max-height:80vh; overflow-y:auto;">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-4">
+
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="fw-semibold mb-0">Step <span>@currentStep</span></h4>
+                            <span class="badge bg-primary">In Progress</span>
+                        </div>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label required">Subscription Plan</label>
+                                <select class="form-select" id="Plan">
+                                    @foreach (SubscriptionPlan plan in Enum.GetValues(typeof(SubscriptionPlan)))
+                                    {
+                                        <option value="@((int)plan)"
+                                                selected="@(Model?.Plan == plan)">
+                                            @plan
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label required">Payment Method</label>
+                                <select class="form-select" id="PaymentMethod">
+                                    @foreach (PaymentMethod method in Enum.GetValues(typeof(PaymentMethod)))
+                                    {
+                                        <option value="@((int)method)"
+                                                selected="@(Model?.PaymentMethod == method)">
+                                            @method
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label required">Transaction ID</label>
+                                <input type="text" class="form-control" id="PaymentTransactionId"
+                                       value="@Model?.PaymentTransactionId" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Amount</label>
+                                <input type="text" class="form-control" id="Amount"
+                                       value="@Model?.Amount"
+                                       readonly />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Start Date</label>
+                                <input type="text" class="form-control" id="StartDate"
+                                       value="@DateTime.UtcNow.ToString("dd MMM yyyy")"
+                                       readonly />
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Expiry Date</label>
+                                <input type="text" class="form-control" id="EndDate"
+                                       value="@(Model?.EndDate.ToString("dd MMM yyyy"))"
+                                       readonly />
+                            </div>
+
+                            <div class="col-md-12">
+                                <label class="form-label">Remarks</label>
+                                <textarea class="form-control" id="Remarks" rows="3">@Model?.Remarks</textarea>
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="button" class="btn btn-outline-secondary btn-prev-step">← Previous</button>
+                            <button type="button" class="btn btn-primary btn-next-step">Save & Continue →</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="infoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Subscription Saved</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="savedInfoContent"></div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        label.required::after {
+            content: " *";
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const planDropdown = document.getElementById('Plan');
+            const amountInput = document.getElementById('Amount');
+            const endDateInput = document.getElementById('EndDate');
+
+            function updatePlanDetails() {
+                const selectedPlan = parseInt(planDropdown.value);
+                const startDate = new Date();
+                let endDate = new Date(startDate);
+                let amount = 200;
+
+                switch (selectedPlan) {
+                    case 1:
+                        endDate.setDate(startDate.getDate() + 7);
+                        amount = 50;
+                        break;
+                    case 2:
+                        endDate.setMonth(startDate.getMonth() + 1);
+                        amount = 200;
+                        break;
+                    case 3:
+                        endDate.setMonth(startDate.getMonth() + 3);
+                        amount = 500;
+                        break;
+                    case 4:
+                        endDate.setMonth(startDate.getMonth() + 6);
+                        amount = 900;
+                        break;
+                    case 5:
+                        endDate.setFullYear(startDate.getFullYear() + 1);
+                        amount = 1700;
+                        break;
+                }
+
+                amountInput.value = amount;
+                endDateInput.value = endDate.toLocaleDateString();
+            }
+
+            planDropdown.addEventListener('change', updatePlanDetails);
+
+            updatePlanDetails();
+
+            async function saveSubscription() {
+                const model = {
+                    Plan: parseInt(document.getElementById('Plan').value),
+                    PaymentMethod: parseInt(document.getElementById('PaymentMethod').value),
+                    PaymentTransactionId: document.getElementById('PaymentTransactionId').value,
+                    Remarks: document.getElementById('Remarks').value
+                };
+
+                const response = await fetch('/CvBuilder/SaveSubscription', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(model)
+                });
+
+                const result = await response.json();
+
+                document.getElementById('savedInfoContent').innerHTML = result.message;
+                const modal = new bootstrap.Modal(document.getElementById('infoModal'));
+                modal.show();
+
+                if (result.success) {
+                    setTimeout(() => {
+                        window.location.href = '/CvBuilder/TemplateSelection';
+                    }, 1000);
+                }
+            }
+
+            document.querySelector('.btn-next-step').addEventListener('click', function (e) {
+                e.preventDefault();
+                saveSubscription();
+            });
+
+            document.querySelector('.btn-prev-step').addEventListener('click', function () {
+                window.location.href = '/CvBuilder/References';
+            });
+        });
+    </script>
+}
