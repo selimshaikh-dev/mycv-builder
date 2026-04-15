@@ -129,8 +129,22 @@ namespace MYCV.Web.Controllers
                 if (!hasActiveSubscription)
                     return RedirectToAction("Subscription");
 
-                // After subscription → template selection
-                return RedirectToAction("TemplateSelection");
+                // ===============================
+                // STEP 10: Template Selection Check
+                // ===============================
+                var templateResponse = await _cvApiService.GetUserSelectedTemplateAsync(userId);
+
+                bool hasSelectedTemplate = templateResponse.Success
+                                           && templateResponse.Data != null
+                                           && templateResponse.Data.TemplateId > 0;
+
+                if (!hasSelectedTemplate)
+                    return RedirectToAction("TemplateSelection");
+
+                // ===============================
+                // STEP 11: Preview & Download
+                // ===============================
+                return RedirectToAction("PreviewDownload");
             }
             catch (UnauthorizedAccessException)
             {
@@ -842,6 +856,116 @@ namespace MYCV.Web.Controllers
                 _logger.LogError(
                     ex,
                     "Error saving subscription for user {User}",
+                    User.Identity?.Name);
+
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Message = "Internal server error."
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TemplateSelection()
+        {
+            try
+            {
+                int userId = User.GetUserId();
+
+                var response = await _cvApiService.GetUserSelectedTemplateAsync(userId);
+
+                if (!response.Success)
+                {
+                    _logger.LogWarning(
+                        "Failed to load template selection for user {UserId}: {Message}",
+                        userId, response.Message);
+
+                    TempData["ErrorMessage"] =
+                        response.Message ?? "Unable to load template data.";
+
+                    return View(new UserSelectedTemplateDto());
+                }
+
+                var model = response.Data ?? new UserSelectedTemplateDto();
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error loading template selection for user {User}",
+                    User.Identity?.Name);
+
+                TempData["ErrorMessage"] =
+                    "An unexpected error occurred while loading template data.";
+
+                return View(new UserSelectedTemplateDto());
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveTemplateSelection(
+            [FromBody] UserSelectedTemplateDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning(
+                    "Invalid template selection submitted for user {User}",
+                    User.Identity?.Name);
+
+                return BadRequest(new
+                {
+                    Success = false,
+                    Message = "Please select a template."
+                });
+            }
+
+            try
+            {
+                model.UserId = User.GetUserId();
+
+                var result = await _cvApiService.SaveUserSelectedTemplateAsync(model);
+
+                if (!result.Success)
+                {
+                    _logger.LogWarning(
+                        "Failed to save template selection for user {UserId}: {Message}",
+                        model.UserId,
+                        result.Message);
+
+                    return BadRequest(new
+                    {
+                        Success = false,
+                        Message = result.Message
+                    });
+                }
+
+                _logger.LogInformation(
+                    "Saved template successfully for user {UserId}",
+                    model.UserId);
+
+                return Ok(new
+                {
+                    Success = true,
+                    Data = result.Data,
+                    Message = "Template selected successfully!"
+                });
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new
+                {
+                    Success = false,
+                    Message = "User not authorized."
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error saving template selection for user {User}",
                     User.Identity?.Name);
 
                 return StatusCode(500, new

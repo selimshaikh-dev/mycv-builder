@@ -30,5 +30,8 @@ namespace MYCV.Web.Services.Api
 
         Task<ApiResponse<UserSubscriptionDto>> GetUserSubscriptionAsync(int userId);
         Task<ApiResponse<UserSubscriptionDto>> SaveUserSubscriptionAsync(UserSubscriptionDto subscription);
+
+        Task<ApiResponse<UserSelectedTemplateDto>> GetUserSelectedTemplateAsync(int userId);
+        Task<ApiResponse<UserSelectedTemplateDto>> SaveUserSelectedTemplateAsync(UserSelectedTemplateDto template);
     }
 }

@@ -6,6 +6,10 @@ namespace MYCV.Infrastructure.Data
     public class MyCvDbContext : DbContext
     {
         public MyCvDbContext(DbContextOptions<MyCvDbContext> options) : base(options) { }
+
+        // =========================
+        // DB SETS
+        // =========================
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<UserPersonalDetail> UserPersonalDetails { get; set; } = null!;
         public DbSet<UserEducation> UserEducations { get; set; } = null!;
@@ -16,101 +20,137 @@ namespace MYCV.Infrastructure.Data
         public DbSet<UserSummaryObjective> UserSummaryObjectives { get; set; } = null!;
         public DbSet<UserReference> UserReferences { get; set; } = null!;
         public DbSet<UserSubscription> UserSubscriptions { get; set; } = null!;
+        public DbSet<UserSelectedTemplate> UserSelectedTemplates { get; set; } = null!;
+        public DbSet<CvTemplate> CvTemplates { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // User → UserPersonalDetail (One-to-One)
+            // =========================
+            // USER - PERSONAL DETAIL (1:1)
+            // =========================
             modelBuilder.Entity<UserPersonalDetail>()
-                .HasOne(pd => pd.User)
-                .WithOne(u => u.UserPersonalDetail)
-                .HasForeignKey<UserPersonalDetail>(pd => pd.UserId)
+                .HasOne(x => x.User)
+                .WithOne(x => x.UserPersonalDetail)
+                .HasForeignKey<UserPersonalDetail>(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // User → UserEducation (One-to-Many)
+            // =========================
+            // USER - EDUCATION (1:M)
+            // =========================
             modelBuilder.Entity<UserEducation>()
-                .HasOne(e => e.User)
-                .WithMany(u => u.UserEducations)
-                .HasForeignKey(e => e.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserEducations)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserExperience (One-to-Many)
+            // =========================
+            // USER - EXPERIENCE (1:M)
+            // =========================
             modelBuilder.Entity<UserExperience>()
-                .HasOne(e => e.User)
-                .WithMany(u => u.UserExperiences)
-                .HasForeignKey(e => e.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserExperiences)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserSkill (One-to-Many)
+            // =========================
+            // USER - SKILL (1:M)
+            // =========================
             modelBuilder.Entity<UserSkill>()
-                .HasOne(s => s.User)
-                .WithMany(u => u.UserSkills)
-                .HasForeignKey(s => s.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserSkills)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserProject (One-to-Many)
+            // =========================
+            // USER - PROJECT (1:M)
+            // =========================
             modelBuilder.Entity<UserProject>()
-                .HasOne(p => p.User)
-                .WithMany(u => u.UserProjects)
-                .HasForeignKey(p => p.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserProjects)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserLanguage (One-to-Many)
+            // =========================
+            // USER - LANGUAGE (1:M)
+            // =========================
             modelBuilder.Entity<UserLanguage>()
-                .HasOne(l => l.User)
-                .WithMany(u => u.UserLanguages)
-                .HasForeignKey(l => l.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserLanguages)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserSummaryObjective (One-to-Many)
+            // =========================
+            // USER - SUMMARY OBJECTIVE (1:M)
+            // =========================
             modelBuilder.Entity<UserSummaryObjective>()
-                .HasOne(s => s.User)
-                .WithMany(u => u.UserSummaryObjectives)
-                .HasForeignKey(s => s.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserSummaryObjectives)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserReference (One-to-Many)
+            // =========================
+            // USER - REFERENCE (1:M)
+            // =========================
             modelBuilder.Entity<UserReference>()
-                .HasOne(r => r.User)
-                .WithMany(u => u.UserReferences)
-                .HasForeignKey(r => r.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserReferences)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            // User → UserSubscription (One-to-Many)
+            // =========================
+            // USER - SUBSCRIPTION (1:M)
+            // =========================
             modelBuilder.Entity<UserSubscription>()
-                .HasOne(s => s.User)
-                .WithMany(u => u.UserSubscriptions)
-                .HasForeignKey(s => s.UserId)
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserSubscriptions)
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
+            // =========================
+            // USER - SELECTED TEMPLATE (1:M)
+            // =========================
+            modelBuilder.Entity<UserSelectedTemplate>()
+                .HasOne(x => x.User)
+                .WithMany(x => x.UserSelectedTemplates)
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
-            // Unique Email for Users
+            // =========================
+            // INDEXES
+            // =========================
+
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
+                .HasIndex(x => x.Email)
                 .IsUnique();
 
-            // Optional: Composite index for priority sorting
             modelBuilder.Entity<UserSkill>()
-                .HasIndex(s => new { s.UserId, s.Priority });
+                .HasIndex(x => new { x.UserId, x.Priority });
 
             modelBuilder.Entity<UserExperience>()
-                .HasIndex(e => new { e.UserId, e.Priority });
+                .HasIndex(x => new { x.UserId, x.Priority });
 
             modelBuilder.Entity<UserProject>()
-                .HasIndex(p => new { p.UserId, p.Priority });
+                .HasIndex(x => new { x.UserId, x.Priority });
 
             modelBuilder.Entity<UserLanguage>()
-                .HasIndex(l => new { l.UserId, l.Priority });
+                .HasIndex(x => new { x.UserId, x.Priority });
 
             modelBuilder.Entity<UserSummaryObjective>()
-                .HasIndex(s => new { s.UserId, s.Priority });
+                .HasIndex(x => new { x.UserId, x.Priority });
 
             modelBuilder.Entity<UserReference>()
-                .HasIndex(r => new { r.UserId, r.Priority });
+                .HasIndex(x => new { x.UserId, x.Priority });
 
             modelBuilder.Entity<UserSubscription>()
-                .HasIndex(s => new { s.UserId, s.StartDate });
+                .HasIndex(x => new { x.UserId, x.StartDate });
+
+            modelBuilder.Entity<UserSelectedTemplate>()
+                .HasIndex(x => new { x.UserId, x.CreatedDate });
+
+            modelBuilder.Entity<CvTemplate>()
+                .HasIndex(x => new { x.IsPremium });
         }
     }
 }

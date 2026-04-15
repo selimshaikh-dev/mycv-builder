@@ -1046,5 +1046,116 @@ namespace MYCV.Web.Services.Api
                 return ApiResponse<UserSubscriptionDto>.ErrorResponse($"Network or API error: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Get user selected template record
+        /// </summary>
+        /// <param name="userId">The ID of the user</param>
+        /// <returns>ApiResponse with user selected template</returns>
+        public async Task<ApiResponse<UserSelectedTemplateDto>> GetUserSelectedTemplateAsync(int userId)
+        {
+            try
+            {
+                _logger.LogInformation(
+                    "Fetching selected template record for user {UserId}",
+                    userId);
+
+                var response = await _httpClient.GetAsync($"api/cv/{userId}/selected-template");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogWarning(
+                        "GetUserSelectedTemplateAsync failed for user {UserId}. StatusCode: {StatusCode}, Error: {Error}",
+                        userId, response.StatusCode, errorContent);
+
+                    return ApiResponse<UserSelectedTemplateDto>.ErrorResponse(errorContent);
+                }
+
+                var result = await response.Content
+                    .ReadFromJsonAsync<ApiResponse<UserSelectedTemplateDto>>(AppJsonOptions.Options);
+
+                if (result == null)
+                {
+                    _logger.LogWarning(
+                        "GetUserSelectedTemplateAsync returned null response for user {UserId}",
+                        userId);
+
+                    return ApiResponse<UserSelectedTemplateDto>.ErrorResponse("Invalid response from API");
+                }
+
+                _logger.LogInformation(
+                    "Successfully fetched selected template record for user {UserId}",
+                    userId);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Exception occurred in GetUserSelectedTemplateAsync for user {UserId}",
+                    userId);
+
+                return ApiResponse<UserSelectedTemplateDto>.ErrorResponse("Network or API error");
+            }
+        }
+
+        /// <summary>
+        /// Save user selected template record
+        /// </summary>
+        /// <param name="template">User selected template to save</param>
+        /// <returns>ApiResponse with saved template</returns>
+        public async Task<ApiResponse<UserSelectedTemplateDto>> SaveUserSelectedTemplateAsync(UserSelectedTemplateDto template)
+        {
+            if (template == null)
+                return ApiResponse<UserSelectedTemplateDto>.ErrorResponse("Template selection data is empty");
+
+            try
+            {
+                _logger.LogInformation(
+                    "Saving selected template for user {UserId}",
+                    template.UserId);
+
+                var response = await _httpClient.PostAsJsonAsync(
+                    "api/cv/selected-template",
+                    template,
+                    AppJsonOptions.Options);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogWarning(
+                        "SaveUserSelectedTemplateAsync failed. StatusCode: {StatusCode}, Error: {Error}",
+                        response.StatusCode, errorContent);
+
+                    return ApiResponse<UserSelectedTemplateDto>.ErrorResponse(errorContent);
+                }
+
+                var result = await response.Content
+                    .ReadFromJsonAsync<ApiResponse<UserSelectedTemplateDto>>(AppJsonOptions.Options);
+
+                if (result == null)
+                {
+                    _logger.LogWarning(
+                        "SaveUserSelectedTemplateAsync returned null response");
+
+                    return ApiResponse<UserSelectedTemplateDto>.ErrorResponse("Invalid response from API");
+                }
+
+                _logger.LogInformation(
+                    "User selected template saved successfully");
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex,
+                    "Exception occurred in SaveUserSelectedTemplateAsync");
+
+                return ApiResponse<UserSelectedTemplateDto>.ErrorResponse($"Network or API error: {ex.Message}");
+            }
+        }
     }
 }

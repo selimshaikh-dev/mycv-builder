@@ -21,6 +21,8 @@ namespace MYCV.API.Controllers
         private readonly IUserSummaryObjectiveService _userSummaryObjectiveService;
         private readonly IUserReferenceService _userReferenceService;
         private readonly IUserSubscriptionService _userSubscriptionService;
+        private readonly IUserSelectedTemplateService _userSelectedTemplateService;
+
         public UserCvController(ILogger<UserCvController> logger, IUserPersonalDetailService userPersonalDetail,
             IUserEducationService userEducationService, IUserExperienceService userExperienceService, IUserSkillService userSkillService, IUserProjectService userProjectService, IUserLanguageService userLanguageService, IUserSummaryObjectiveService userSummaryObjectiveService, IUserReferenceService userReferenceService, IUserSubscriptionService userSubscriptionService)
         {
