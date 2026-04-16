@@ -1102,6 +1102,53 @@ namespace MYCV.Web.Services.Api
         }
 
         /// <summary>
+        /// Get all CV templates
+        /// </summary>
+        /// <returns>ApiResponse with template list</returns>
+        public async Task<ApiResponse<List<CvTemplateDto>>> GetCvTemplatesAsync()
+        {
+            try
+            {
+                _logger.LogInformation("Fetching CV templates");
+
+                var response = await _httpClient.GetAsync("api/cv/templates");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorContent = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogWarning(
+                        "GetCvTemplatesAsync failed. StatusCode: {StatusCode}, Error: {Error}",
+                        response.StatusCode, errorContent);
+
+                    return ApiResponse<List<CvTemplateDto>>.ErrorResponse(errorContent);
+                }
+
+                var result = await response.Content
+                    .ReadFromJsonAsync<ApiResponse<List<CvTemplateDto>>>(AppJsonOptions.Options);
+
+                if (result == null)
+                {
+                    _logger.LogWarning("GetCvTemplatesAsync returned null response");
+
+                    return ApiResponse<List<CvTemplateDto>>
+                        .ErrorResponse("Invalid response from API");
+                }
+
+                _logger.LogInformation("Successfully fetched CV templates");
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Exception occurred in GetCvTemplatesAsync");
+
+                return ApiResponse<List<CvTemplateDto>>
+                    .ErrorResponse("Network or API error");
+            }
+        }
+
+        /// <summary>
         /// Save user selected template record
         /// </summary>
         /// <param name="template">User selected template to save</param>

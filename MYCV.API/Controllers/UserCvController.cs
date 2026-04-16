@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MYCV.Shared.Extensions;
 using MYCV.Application.DTOs;
 using MYCV.Application.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace MYCV.API.Controllers
 {
@@ -21,10 +22,11 @@ namespace MYCV.API.Controllers
         private readonly IUserSummaryObjectiveService _userSummaryObjectiveService;
         private readonly IUserReferenceService _userReferenceService;
         private readonly IUserSubscriptionService _userSubscriptionService;
+        private readonly ICvTemplateService _cvTemplateService;
         private readonly IUserSelectedTemplateService _userSelectedTemplateService;
 
         public UserCvController(ILogger<UserCvController> logger, IUserPersonalDetailService userPersonalDetail,
-            IUserEducationService userEducationService, IUserExperienceService userExperienceService, IUserSkillService userSkillService, IUserProjectService userProjectService, IUserLanguageService userLanguageService, IUserSummaryObjectiveService userSummaryObjectiveService, IUserReferenceService userReferenceService, IUserSubscriptionService userSubscriptionService)
+            IUserEducationService userEducationService, IUserExperienceService userExperienceService, IUserSkillService userSkillService, IUserProjectService userProjectService, IUserLanguageService userLanguageService, IUserSummaryObjectiveService userSummaryObjectiveService, IUserReferenceService userReferenceService, IUserSubscriptionService userSubscriptionService, ICvTemplateService cvTemplateService, IUserSelectedTemplateService userSelectedTemplateService)
         {
             _logger = logger;
             _userPersonalDetail = userPersonalDetail;
@@ -36,6 +38,8 @@ namespace MYCV.API.Controllers
             _userSummaryObjectiveService = userSummaryObjectiveService;
             _userReferenceService = userReferenceService;
             _userSubscriptionService = userSubscriptionService;
+            _cvTemplateService = cvTemplateService;
+            _userSelectedTemplateService = userSelectedTemplateService;
         }
 
         /// <summary>
@@ -429,8 +433,6 @@ namespace MYCV.API.Controllers
         /// <summary>
         /// Get all summaryObjective records for a user
         /// </summary>
-        /// <param name="userId">The ID of the user</param>
-        /// <returns>ApiResponse with user's summaryObjective list</returns>
         [HttpGet("{userId:int}/summaryObjective")]
         public async Task<IActionResult> GetUserSummaryObjective(int userId)
         {
@@ -621,6 +623,87 @@ namespace MYCV.API.Controllers
             {
                 _logger.LogError(ex, "Error saving subscription for user {UserId}", User.Identity?.Name);
                 return StatusCode(500, ApiResponse<UserSubscriptionDto>
+                    .ErrorResponse("Internal server error"));
+            }
+        }
+
+        /// <summary>
+        /// Get all CV templates
+        /// </summary>
+        /// <returns>List of available CV templates</returns>
+        [HttpGet("templates")]
+        public async Task<IActionResult> GetCvTemplates()
+        {
+            try
+            {
+                _logger.LogInformation("Fetching all CV templates");
+
+                var templates = await _cvTemplateService.GetAllAsync();
+
+                if (templates == null || !templates.Any())
+                {
+                    _logger.LogWarning("No CV templates found in database");
+
+                    return NotFound(ApiResponse<List<CvTemplateDto>>
+                        .ErrorResponse("No templates found"));
+                }
+
+                var result = templates.Select(t => new CvTemplateDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    ImageUrl = t.ImageUrl,
+                    Description = t.Description,
+                    IsPremium = t.IsPremium
+                }).ToList();
+
+                _logger.LogInformation("Successfully fetched {Count} CV templates", result.Count);
+
+                return Ok(ApiResponse<List<CvTemplateDto>>
+                    .SuccessResponse(result, "Templates fetched successfully"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching CV templates");
+
+                return StatusCode(500, ApiResponse<List<CvTemplateDto>>
+                    .ErrorResponse("Internal server error"));
+            }
+        }
+
+        /// <summary>
+        /// Save user selected CV template
+        /// </summary>
+        [HttpPost("selected-template")]
+        public async Task<IActionResult> SaveSelectedTemplate([FromBody] UserSelectedTemplateDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ApiResponse<UserSelectedTemplateDto>
+                    .ErrorResponse("Please select a template."));
+            }
+
+            try
+            {
+                int userId = User.GetUserId();
+                dto.UserId = userId;
+
+                var savedTemplate = await _userSelectedTemplateService
+                    .SaveUserSelectedTemplateAsync(dto);
+
+                return Ok(ApiResponse<UserSelectedTemplateDto>
+                    .SuccessResponse(savedTemplate, "Template selected successfully"));
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(ApiResponse<UserSelectedTemplateDto>
+                    .ErrorResponse("User not authorized"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error saving selected template for user {UserId}", User.Identity?.Name);
+
+                return StatusCode(500, ApiResponse<UserSelectedTemplateDto>
                     .ErrorResponse("Internal server error"));
             }
         }

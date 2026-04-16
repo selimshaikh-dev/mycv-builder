@@ -871,23 +871,21 @@ namespace MYCV.Web.Controllers
         {
             try
             {
-                int userId = User.GetUserId();
-
-                var response = await _cvApiService.GetUserSelectedTemplateAsync(userId);
+                var response = await _cvApiService.GetCvTemplatesAsync();
 
                 if (!response.Success)
                 {
                     _logger.LogWarning(
-                        "Failed to load template selection for user {UserId}: {Message}",
-                        userId, response.Message);
+                        "Failed to load CV templates: {Message}",
+                        response.Message);
 
                     TempData["ErrorMessage"] =
                         response.Message ?? "Unable to load template data.";
 
-                    return View(new UserSelectedTemplateDto());
+                    return View(new List<CvTemplateDto>());
                 }
 
-                var model = response.Data ?? new UserSelectedTemplateDto();
+                var model = response.Data ?? new List<CvTemplateDto>();
 
                 return View(model);
             }
@@ -901,7 +899,7 @@ namespace MYCV.Web.Controllers
                 TempData["ErrorMessage"] =
                     "An unexpected error occurred while loading template data.";
 
-                return View(new UserSelectedTemplateDto());
+                return View(new List<CvTemplateDto>());
             }
         }
 

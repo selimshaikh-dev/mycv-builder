@@ -1,0 +1,263 @@
+﻿@using MYCV.Domain.Enums
+@model List<MYCV.Application.DTOs.CvTemplateDto>
+
+@{
+    ViewData["Title"] = "Template Selection";
+
+    var currentStep = (int)CvStep.TemplateSelection;
+
+    var completedSteps = new List<int>
+    {
+        (int)CvStep.PersonalDetail,
+        (int)CvStep.Education,
+        (int)CvStep.WorkExperience,
+        (int)CvStep.Skills,
+        (int)CvStep.Projects,
+        (int)CvStep.Languages,
+        (int)CvStep.SummaryObjective,
+        (int)CvStep.References
+    };
+}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <!-- HEADER -->
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Choose Your CV Template</h2>
+            <p class="text-muted">Select a professional template to continue</p>
+        </div>
+
+        <div class="row">
+
+            <!-- LEFT STEP -->
+            <div class="col-lg-3 mb-4">
+                @await Component.InvokeAsync("CvStepNavigation", new
+                    {
+                        currentStep = currentStep,
+                        completedSteps = completedSteps
+                    })
+            </div>
+
+            <!-- RIGHT CONTENT -->
+            <div class="col-lg-9">
+
+                <div class="row g-4">
+
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <div class="col-lg-4 col-md-6">
+
+                                <div class="template-card">
+
+                                    <div class="template-image-wrapper">
+                                        <img src="@item.ImageUrl" class="template-image" />
+
+                                        <div class="template-overlay">
+                                            <button class="btn btn-light btn-sm"
+                                                    onclick="previewTemplate('@item.ImageUrl')">
+                                                Preview
+                                            </button>
+
+                                            <button class="btn btn-primary btn-sm"
+                                                    onclick="selectTemplate(@item.Id)">
+                                                Select
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-2 text-center">
+                                        <h6 class="fw-bold mb-1">@item.Title</h6>
+                                        <small class="text-muted">@item.Description</small>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center text-muted">
+                            No templates found
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FULL SCREEN PREVIEW MODAL -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-dark">
+
+            <div class="modal-header border-0">
+                <h5 class="text-white">Template Preview</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body d-flex justify-content-center align-items-center">
+                <img id="previewImage" style="max-width:90%; max-height:90%;" />
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+
+        /* ================= CV STEPS (FIXED WORKING) ================= */
+        .cv-steps {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+            .cv-steps .step {
+                display: flex;
+                align-items: center;
+                padding: 10px 0;
+                font-weight: 500;
+                color: #6c757d;
+                position: relative;
+            }
+
+            .cv-steps .step-circle {
+                width: 28px;
+                height: 28px;
+                border-radius: 50%;
+                border: 2px solid #dee2e6;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 10px;
+            }
+
+            .cv-steps .step.active {
+                color: #0d6efd;
+            }
+
+                .cv-steps .step.active .step-circle {
+                    background: #0d6efd;
+                    color: #fff;
+                    border-color: #0d6efd;
+                }
+
+            .cv-steps .step.completed {
+                color: #198754;
+            }
+
+                .cv-steps .step.completed .step-circle {
+                    background: #198754;
+                    color: #fff;
+                    border-color: #198754;
+                }
+
+            .cv-steps .step:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                left: 14px;
+                top: 35px;
+                width: 2px;
+                height: 100%;
+                background: #e9ecef;
+            }
+
+        /* ================= TEMPLATE CARD ================= */
+        .template-card {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,.08);
+            transition: 0.3s;
+        }
+
+            .template-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .template-image-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            transition: 0.4s;
+        }
+
+        .template-card:hover .template-image {
+            transform: scale(1.08);
+        }
+
+        .template-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,.55);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+        }
+
+        .template-card:hover .template-overlay {
+            opacity: 1;
+        }
+
+    </style>
+}
+
+@section Scripts {
+    <script>
+
+        function previewTemplate(imageUrl) {
+            document.getElementById('previewImage').src = imageUrl;
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+        }
+
+        async function selectTemplate(templateId) {
+
+            try {
+                const response = await fetch('/CvBuilder/SaveTemplateSelection', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        templateId: templateId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+
+                    alert(data.message || "Template selected successfully");
+
+                    // ✅ Redirect to next step (CV Builder start)
+                    window.location.href = '/CvBuilder/Step?stepNumber=1';
+                }
+                else {
+                    alert(data.message || "Failed to select template");
+                }
+            }
+            catch (error) {
+                console.error("Template selection error:", error);
+                alert("Something went wrong. Please try again.");
+            }
+        }
+
+    </script>
+}
