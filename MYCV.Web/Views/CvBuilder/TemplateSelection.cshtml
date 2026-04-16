@@ -50,21 +50,26 @@
                         {
                             <div class="col-lg-4 col-md-6">
 
-                                <div class="template-card">
+                                <div class="template-card @(item.IsPremium ? "border-warning" : "")"
+                                     data-template-id="@item.Id">
 
                                     <div class="template-image-wrapper">
                                         <img src="@item.ImageUrl" class="template-image" />
 
                                         <div class="template-overlay">
+
                                             <button class="btn btn-light btn-sm"
+                                                    type="button"
                                                     onclick="previewTemplate('@item.ImageUrl')">
                                                 Preview
                                             </button>
 
                                             <button class="btn btn-primary btn-sm"
-                                                    onclick="selectTemplate(@item.Id)">
+                                                    type="button"
+                                                    onclick="selectTemplate(@item.Id, this)">
                                                 Select
                                             </button>
+
                                         </div>
                                     </div>
 
@@ -90,10 +95,22 @@
             </div>
 
         </div>
+
+        <!-- ✅ BOTTOM RIGHT BUTTON (GLOBAL CONTINUE) -->
+        <div class="d-flex justify-content-end mt-4">
+            <button type="button"
+                    class="btn btn-primary btn-next-step"
+                    id="btnContinue"
+                    disabled
+                    onclick="goToPreview()">
+                Save & Continue →
+            </button>
+        </div>
+
     </div>
 </section>
 
-<!-- FULL SCREEN PREVIEW MODAL -->
+<!-- PREVIEW MODAL -->
 <div class="modal fade" id="previewModal" tabindex="-1">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-dark">
@@ -222,12 +239,40 @@
 @section Scripts {
     <script>
 
+        let selectedTemplateId = 0;
+
         function previewTemplate(imageUrl) {
             document.getElementById('previewImage').src = imageUrl;
             new bootstrap.Modal(document.getElementById('previewModal')).show();
         }
 
-        async function selectTemplate(templateId) {
+        // ==============================
+        // SELECT TEMPLATE
+        // ==============================
+        function selectTemplate(templateId, btn) {
+
+            selectedTemplateId = templateId;
+
+            // UI highlight
+            document.querySelectorAll('.template-card').forEach(c => {
+                c.classList.remove('border-primary');
+            });
+
+            btn.closest('.template-card').classList.add('border-primary');
+
+            // enable continue button
+            document.getElementById('btnContinue').disabled = false;
+        }
+
+        // ==============================
+        // SAVE + REDIRECT
+        // ==============================
+        async function goToPreview() {
+
+            if (selectedTemplateId === 0) {
+                alert("Please select a template first");
+                return;
+            }
 
             try {
                 const response = await fetch('/CvBuilder/SaveTemplateSelection', {
@@ -236,7 +281,7 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        templateId: templateId
+                        templateId: selectedTemplateId
                     })
                 });
 
@@ -244,18 +289,19 @@
 
                 if (response.ok && data.success) {
 
-                    alert(data.message || "Template selected successfully");
+                    // optional message
+                    // alert(data.message);
 
-                    // ✅ Redirect to next step (CV Builder start)
-                    window.location.href = '/CvBuilder/Step?stepNumber=1';
+                    // ✅ FINAL STEP REDIRECT
+                    window.location.href = '/CvBuilder/PreviewDownload';
                 }
                 else {
-                    alert(data.message || "Failed to select template");
+                    alert(data.message || "Failed to save template");
                 }
             }
             catch (error) {
-                console.error("Template selection error:", error);
-                alert("Something went wrong. Please try again.");
+                console.error(error);
+                alert("Something went wrong");
             }
         }
 

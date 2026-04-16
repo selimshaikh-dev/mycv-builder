@@ -1204,5 +1204,65 @@ namespace MYCV.Web.Services.Api
                 return ApiResponse<UserSelectedTemplateDto>.ErrorResponse($"Network or API error: {ex.Message}");
             }
         }
+
+        /// <summary>
+        /// Get full CV preview data for user (Template + All CV sections)
+        /// </summary>
+        /// <param name="userId">User ID</param>
+        /// <returns>CvPreviewDto with all CV data</returns>
+        public async Task<ApiResponse<CvPreviewDto>> GetCvPreviewAsync(int userId)
+        {
+            if (userId <= 0)
+                return ApiResponse<CvPreviewDto>.ErrorResponse("Invalid user id");
+
+            try
+            {
+                _logger.LogInformation(
+                    "Loading CV preview data for user {UserId}",
+                    userId);
+
+                var response = await _httpClient.GetAsync(
+                    $"api/cv/preview/{userId}");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var error = await response.Content.ReadAsStringAsync();
+
+                    _logger.LogWarning(
+                        "GetCvPreviewAsync failed. StatusCode: {StatusCode}, Error: {Error}",
+                        response.StatusCode,
+                        error);
+
+                    return ApiResponse<CvPreviewDto>.ErrorResponse(error);
+                }
+
+                var result = await response.Content
+                    .ReadFromJsonAsync<ApiResponse<CvPreviewDto>>(AppJsonOptions.Options);
+
+                if (result == null)
+                {
+                    _logger.LogWarning("GetCvPreviewAsync returned null response");
+
+                    return ApiResponse<CvPreviewDto>
+                        .ErrorResponse("Invalid response from API");
+                }
+
+                _logger.LogInformation(
+                    "CV preview loaded successfully for user {UserId}",
+                    userId);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Exception occurred in GetCvPreviewAsync for user {UserId}",
+                    userId);
+
+                return ApiResponse<CvPreviewDto>
+                    .ErrorResponse($"Network or API error: {ex.Message}");
+            }
+        }
     }
 }

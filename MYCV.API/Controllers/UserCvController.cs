@@ -24,9 +24,10 @@ namespace MYCV.API.Controllers
         private readonly IUserSubscriptionService _userSubscriptionService;
         private readonly ICvTemplateService _cvTemplateService;
         private readonly IUserSelectedTemplateService _userSelectedTemplateService;
+        private readonly ICvPreviewService _cvPreviewService;
 
         public UserCvController(ILogger<UserCvController> logger, IUserPersonalDetailService userPersonalDetail,
-            IUserEducationService userEducationService, IUserExperienceService userExperienceService, IUserSkillService userSkillService, IUserProjectService userProjectService, IUserLanguageService userLanguageService, IUserSummaryObjectiveService userSummaryObjectiveService, IUserReferenceService userReferenceService, IUserSubscriptionService userSubscriptionService, ICvTemplateService cvTemplateService, IUserSelectedTemplateService userSelectedTemplateService)
+            IUserEducationService userEducationService, IUserExperienceService userExperienceService, IUserSkillService userSkillService, IUserProjectService userProjectService, IUserLanguageService userLanguageService, IUserSummaryObjectiveService userSummaryObjectiveService, IUserReferenceService userReferenceService, IUserSubscriptionService userSubscriptionService, ICvTemplateService cvTemplateService, IUserSelectedTemplateService userSelectedTemplateService, ICvPreviewService cvPreviewService)
         {
             _logger = logger;
             _userPersonalDetail = userPersonalDetail;
@@ -40,6 +41,7 @@ namespace MYCV.API.Controllers
             _userSubscriptionService = userSubscriptionService;
             _cvTemplateService = cvTemplateService;
             _userSelectedTemplateService = userSelectedTemplateService;
+            _cvPreviewService = cvPreviewService;
         }
 
         /// <summary>
@@ -704,6 +706,58 @@ namespace MYCV.API.Controllers
                 _logger.LogError(ex, "Error saving selected template for user {UserId}", User.Identity?.Name);
 
                 return StatusCode(500, ApiResponse<UserSelectedTemplateDto>
+                    .ErrorResponse("Internal server error"));
+            }
+        }
+
+        /// <summary>
+        /// Get full CV preview data for a specific user
+        /// </summary>
+        /// <param name="userId">The user ID</param>
+        /// <returns>Full CV preview data</returns>
+        [HttpGet("preview/{userId}")]
+        public async Task<IActionResult> GetCvPreview(int userId)
+        {
+            if (userId <= 0)
+            {
+                return BadRequest(ApiResponse<CvPreviewDto>
+                    .ErrorResponse("Invalid user id"));
+            }
+
+            try
+            {
+                _logger.LogInformation(
+                    "Fetching CV preview for user {UserId}",
+                    userId);
+
+                var previewData = await _cvPreviewService
+                    .GetCvPreviewAsync(userId);
+
+                if (previewData == null)
+                {
+                    _logger.LogWarning(
+                        "No CV preview data found for user {UserId}",
+                        userId);
+
+                    return NotFound(ApiResponse<CvPreviewDto>
+                        .ErrorResponse("CV preview data not found"));
+                }
+
+                _logger.LogInformation(
+                    "Successfully fetched CV preview for user {UserId}",
+                    userId);
+
+                return Ok(ApiResponse<CvPreviewDto>
+                    .SuccessResponse(previewData, "CV preview loaded successfully"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error fetching CV preview for user {UserId}",
+                    userId);
+
+                return StatusCode(500, ApiResponse<CvPreviewDto>
                     .ErrorResponse("Internal server error"));
             }
         }

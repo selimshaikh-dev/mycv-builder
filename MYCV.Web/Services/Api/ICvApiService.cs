@@ -33,7 +33,7 @@ namespace MYCV.Web.Services.Api
 
         Task<ApiResponse<UserSelectedTemplateDto>> GetUserSelectedTemplateAsync(int userId);
         Task<ApiResponse<UserSelectedTemplateDto>> SaveUserSelectedTemplateAsync(UserSelectedTemplateDto template);
-
         Task<ApiResponse<List<CvTemplateDto>>> GetCvTemplatesAsync();
+        Task<ApiResponse<CvPreviewDto>> GetCvPreviewAsync(int userId);
     }
 }

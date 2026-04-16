@@ -59,7 +59,7 @@ builder.Services.AddScoped<IUserReferenceService, UserReferenceService>();
 builder.Services.AddScoped<IUserSubscriptionService, UserSubscriptionService>();
 builder.Services.AddScoped<ICvTemplateService, CvTemplateService>();
 builder.Services.AddScoped<IUserSelectedTemplateService, UserSelectedTemplateService>();
-
+builder.Services.AddScoped<ICvPreviewService, CvPreviewService>();
 
 // ============================
 // 5️⃣ Configure File Service

@@ -975,6 +975,55 @@ namespace MYCV.Web.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> PreviewDownload()
+        {
+            try
+            {
+                int userId = User.GetUserId();
+
+                var response = await _cvApiService.GetCvPreviewAsync(userId);
+
+                if (!response.Success || response.Data == null)
+                {
+                    _logger.LogWarning(
+                        "Failed to load preview data for user {UserId}: {Message}",
+                        userId,
+                        response.Message);
+
+                    TempData["ErrorMessage"] =
+                        response.Message ?? "Unable to load CV preview.";
+
+                    return RedirectToAction("TemplateSelection");
+                }
+
+                var model = response.Data;
+
+                if (model.Template == null)
+                {
+                    _logger.LogWarning(
+                        "Template not selected for user {UserId}",
+                        userId);
+
+                    return RedirectToAction("TemplateSelection");
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(
+                    ex,
+                    "Error loading PreviewDownload for user {User}",
+                    User.Identity?.Name);
+
+                TempData["ErrorMessage"] =
+                    "An unexpected error occurred while loading CV preview.";
+
+                return RedirectToAction("TemplateSelection");
+            }
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Step(int stepNumber)
         {
             if (!CvStepHelper.IsValidStep(stepNumber))

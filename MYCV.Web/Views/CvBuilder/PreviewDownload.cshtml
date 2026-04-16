@@ -1,0 +1,83 @@
+﻿@model MYCV.Application.DTOs.CvPreviewDto
+
+@{
+    ViewData["Title"] = "Preview & Download";
+}
+
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">CV Preview</h2>
+
+            <div>
+                <button class="btn btn-outline-primary">
+                    Download Word
+                </button>
+
+                <button class="btn btn-primary">
+                    Download PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+
+                @switch (Model.Template?.TemplateId)
+                {
+                    case 1:
+                        @await Html.PartialAsync("Templates/_Template1", Model)
+                        break;
+
+                    case 2:
+                        @await Html.PartialAsync("Templates/_Template2", Model)
+                        break;
+
+                    case 3:
+                        @await Html.PartialAsync("Templates/_Template3", Model)
+                        break;
+
+                    case 4:
+                        @await Html.PartialAsync("Templates/_Template4", Model)
+                        break;
+
+                    case 5:
+                        @await Html.PartialAsync("Templates/_Template5", Model)
+                        break;
+
+                    case 6:
+                        @await Html.PartialAsync("Templates/_Template6", Model)
+                        break;
+
+                    case 7:
+                        @await Html.PartialAsync("Templates/_Template7", Model)
+                        break;
+
+                    case 8:
+                        @await Html.PartialAsync("Templates/_Template8", Model)
+                        break;
+
+                    case 9:
+                        @await Html.PartialAsync("Templates/_Template9", Model)
+                        break;
+
+                    case 10:
+                        @await Html.PartialAsync("Templates/_Template10", Model)
+                        break;
+
+                    case 11:
+                        @await Html.PartialAsync("Templates/_Template11", Model)
+                        break;
+
+                    default:
+                        <div class="alert alert-warning">
+                            Selected template preview not found.
+                        </div>
+                        break;
+                }
+
+            </div>
+        </div>
+    </div>
+</section>
