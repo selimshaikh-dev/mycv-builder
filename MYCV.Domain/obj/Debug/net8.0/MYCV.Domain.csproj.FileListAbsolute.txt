@@ -34,3 +34,15 @@ G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Domain\obj\Debug\net8.0\MYCV.
 G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Domain\obj\Debug\net8.0\refint\MYCV.Domain.dll
 G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.pdb
 G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Domain\obj\Debug\net8.0\ref\MYCV.Domain.dll
+D:\Projects\MYCV Builder\MYCV.Domain\bin\Debug\net8.0\MYCV.Domain.deps.json
+D:\Projects\MYCV Builder\MYCV.Domain\bin\Debug\net8.0\MYCV.Domain.dll
+D:\Projects\MYCV Builder\MYCV.Domain\bin\Debug\net8.0\MYCV.Domain.pdb
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.AssemblyInfoInputs.cache
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.AssemblyInfo.cs
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.csproj.CoreCompileInputs.cache
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.sourcelink.json
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.dll
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\refint\MYCV.Domain.dll
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\MYCV.Domain.pdb
+D:\Projects\MYCV Builder\MYCV.Domain\obj\Debug\net8.0\ref\MYCV.Domain.dll

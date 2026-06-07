@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Application\\MYCV.Application.csproj": {}
+    "D:\\Projects\\MYCV Builder\\MYCV.Application\\MYCV.Application.csproj": {}
   },
   "projects": {
-    "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Application\\MYCV.Application.csproj": {
+    "D:\\Projects\\MYCV Builder\\MYCV.Application\\MYCV.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Application\\MYCV.Application.csproj",
+        "projectUniqueName": "D:\\Projects\\MYCV Builder\\MYCV.Application\\MYCV.Application.csproj",
         "projectName": "MYCV.Application",
-        "projectPath": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Application\\MYCV.Application.csproj",
-        "packagesPath": "C:\\Users\\selim\\.nuget\\packages\\",
-        "outputPath": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Application\\obj\\",
+        "projectPath": "D:\\Projects\\MYCV Builder\\MYCV.Application\\MYCV.Application.csproj",
+        "packagesPath": "C:\\Users\\Selim\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\MYCV Builder\\MYCV.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\selim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Selim\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -30,10 +30,11 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Domain\\MYCV.Domain.csproj": {
-                "projectPath": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Domain\\MYCV.Domain.csproj"
+              "D:\\Projects\\MYCV Builder\\MYCV.Domain\\MYCV.Domain.csproj": {
+                "projectPath": "D:\\Projects\\MYCV Builder\\MYCV.Domain\\MYCV.Domain.csproj"
               }
             }
           }
@@ -48,10 +49,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "BCrypt.Net-Next": {
@@ -91,24 +93,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Domain\\MYCV.Domain.csproj": {
+    "D:\\Projects\\MYCV Builder\\MYCV.Domain\\MYCV.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Domain\\MYCV.Domain.csproj",
+        "projectUniqueName": "D:\\Projects\\MYCV Builder\\MYCV.Domain\\MYCV.Domain.csproj",
         "projectName": "MYCV.Domain",
-        "projectPath": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Domain\\MYCV.Domain.csproj",
-        "packagesPath": "C:\\Users\\selim\\.nuget\\packages\\",
-        "outputPath": "G:\\60_Projects\\MyCV\\MYCV.Com_ASP.NET_Core_MVC\\MYCV.Domain\\obj\\",
+        "projectPath": "D:\\Projects\\MYCV Builder\\MYCV.Domain\\MYCV.Domain.csproj",
+        "packagesPath": "C:\\Users\\Selim\\.nuget\\packages\\",
+        "outputPath": "D:\\Projects\\MYCV Builder\\MYCV.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\selim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Selim\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -121,6 +123,7 @@
         },
         "frameworks": {
           "net8.0": {
+            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -135,10 +138,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net8.0": {
+          "framework": "net8.0",
           "targetAlias": "net8.0",
           "imports": [
             "net461",
@@ -156,7 +160,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

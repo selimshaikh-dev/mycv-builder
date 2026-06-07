@@ -46,3 +46,19 @@ G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Application\obj\Debug\net8.0\
 G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Application\obj\Debug\net8.0\refint\MYCV.Application.dll
 G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Application\obj\Debug\net8.0\MYCV.Application.pdb
 G:\60_Projects\MyCV\MYCV.Com_ASP.NET_Core_MVC\MYCV.Application\obj\Debug\net8.0\ref\MYCV.Application.dll
+D:\Projects\MYCV Builder\MYCV.Application\bin\Debug\net8.0\MYCV.Application.deps.json
+D:\Projects\MYCV Builder\MYCV.Application\bin\Debug\net8.0\MYCV.Application.dll
+D:\Projects\MYCV Builder\MYCV.Application\bin\Debug\net8.0\MYCV.Application.pdb
+D:\Projects\MYCV Builder\MYCV.Application\bin\Debug\net8.0\MYCV.Domain.dll
+D:\Projects\MYCV Builder\MYCV.Application\bin\Debug\net8.0\MYCV.Domain.pdb
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.csproj.AssemblyReference.cache
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.GeneratedMSBuildEditorConfig.editorconfig
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.AssemblyInfoInputs.cache
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.AssemblyInfo.cs
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.csproj.CoreCompileInputs.cache
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.sourcelink.json
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.App.03A0107A.Up2Date
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.dll
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\refint\MYCV.Application.dll
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\MYCV.Application.pdb
+D:\Projects\MYCV Builder\MYCV.Application\obj\Debug\net8.0\ref\MYCV.Application.dll
