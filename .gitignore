@@ -29,3 +29,6 @@ packages/
 ## VS Code ##
 .vscode/
 .vs/
+bin/
+obj/
+.vs/

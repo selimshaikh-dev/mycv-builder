@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 using MYCV.Web.Helpers;
 using MYCV.Web.Services.Api;
 
@@ -11,7 +12,6 @@ builder.Services
     .AddControllersWithViews()
     .AddJsonOptions(options =>
     {
-        // Use centralized JSON configuration
         options.JsonSerializerOptions.PropertyNameCaseInsensitive =
             AppJsonOptions.Options.PropertyNameCaseInsensitive;
 
@@ -25,17 +25,10 @@ builder.Services
     });
 
 // ---------------------------------
-// 2️⃣ Configure API Base URL
+// 2️⃣ Bind ApiSettings (IMPORTANT)
 // ---------------------------------
-var apiBaseUrl = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl");
-
-if (string.IsNullOrWhiteSpace(apiBaseUrl))
-{
-    throw new InvalidOperationException(
-        "API Base URL is not configured. Please set ApiSettings:BaseUrl in appsettings.json");
-}
-
-Console.WriteLine($"API Base URL: {apiBaseUrl}");
+builder.Services.Configure<ApiSettings>(
+    builder.Configuration.GetSection("ApiSettings"));
 
 // ---------------------------------
 // 3️⃣ Register HttpContextAccessor
@@ -50,18 +43,23 @@ builder.Services.AddTransient<JwtTokenHandler>();
 // ---------------------------------
 // 5️⃣ Register API HttpClients
 // ---------------------------------
-builder.Services.AddHttpClient<IAuthApiService, AuthApiService>(client =>
+
+builder.Services.AddHttpClient<IAuthApiService, AuthApiService>((sp, client) =>
 {
-    client.BaseAddress = new Uri(apiBaseUrl);
+    var config = sp.GetRequiredService<IOptions<ApiSettings>>();
+
+    client.BaseAddress = new Uri(config.Value.BaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
 
     client.DefaultRequestHeaders.Accept.Add(
         new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 });
 
-builder.Services.AddHttpClient<ICvApiService, CvApiService>(client =>
+builder.Services.AddHttpClient<ICvApiService, CvApiService>((sp, client) =>
 {
-    client.BaseAddress = new Uri(apiBaseUrl);
+    var config = sp.GetRequiredService<IOptions<ApiSettings>>();
+
+    client.BaseAddress = new Uri(config.Value.BaseUrl);
     client.Timeout = TimeSpan.FromSeconds(30);
 
     client.DefaultRequestHeaders.Accept.Add(
@@ -119,13 +117,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // ---------------------------------
-// 🔟 Configure Routes
+// 🔟 Routes
 // ---------------------------------
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 // ---------------------------------
-// 1️⃣1️⃣ Run Application
+// 1️⃣1️⃣ Run App
 // ---------------------------------
 app.Run();

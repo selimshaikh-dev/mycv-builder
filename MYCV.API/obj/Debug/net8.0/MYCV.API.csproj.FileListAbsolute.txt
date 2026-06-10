@@ -632,3 +632,4 @@ D:\Projects\MYCV Builder\MYCV.API\obj\Debug\net8.0\refint\MYCV.API.dll
 D:\Projects\MYCV Builder\MYCV.API\obj\Debug\net8.0\MYCV.API.pdb
 D:\Projects\MYCV Builder\MYCV.API\obj\Debug\net8.0\MYCV.API.genruntimeconfig.cache
 D:\Projects\MYCV Builder\MYCV.API\obj\Debug\net8.0\ref\MYCV.API.dll
+D:\Projects\MYCV Builder\MYCV.API\bin\Debug\net8.0\appsettings.Production.json
